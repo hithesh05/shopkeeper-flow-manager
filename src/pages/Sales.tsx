@@ -29,7 +29,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { ShoppingCart, Plus, Trash2 } from 'lucide-react';
+import { ShoppingCart, Plus, Trash2, User } from 'lucide-react';
 import { Product, SaleItem } from '@/types';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -41,6 +41,7 @@ const Sales = () => {
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
   const [customerName, setCustomerName] = useState<string>('Walk-in Customer');
+  const [customerType, setCustomerType] = useState<string>('regular');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaleComplete, setIsSaleComplete] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<any>(null);
@@ -52,6 +53,7 @@ const Sales = () => {
       setSelectedProductId('');
       setQuantity(1);
       setCustomerName('Walk-in Customer');
+      setCustomerType('regular');
       setIsSaleComplete(false);
       setCurrentInvoice(null);
     }
@@ -144,7 +146,10 @@ const Sales = () => {
       quantity: item.quantity,
     }));
     
-    const customerInfo = { name: customerName };
+    const customerInfo = { 
+      name: customerName,
+      type: customerType 
+    };
     const invoice = processSale(saleItems, customerInfo);
     
     // Show completion state
@@ -190,6 +195,21 @@ const Sales = () => {
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
                       />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="customerType">Customer Type</Label>
+                      <Select value={customerType} onValueChange={setCustomerType}>
+                        <SelectTrigger id="customerType">
+                          <SelectValue placeholder="Select customer type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="regular">Regular</SelectItem>
+                          <SelectItem value="vip">VIP</SelectItem>
+                          <SelectItem value="wholesale">Wholesale</SelectItem>
+                          <SelectItem value="corporate">Corporate</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div className="grid gap-2">
@@ -305,6 +325,10 @@ const Sales = () => {
                       <span className="text-muted-foreground">Customer:</span>
                       <span>{currentInvoice?.customerName}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Customer Type:</span>
+                      <span className="capitalize">{currentInvoice?.customerType}</span>
+                    </div>
                   </div>
                   
                   <Table>
@@ -368,6 +392,7 @@ const Sales = () => {
                 <TableHead>Sale ID</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Customer</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Items</TableHead>
                 <TableHead className="text-right">Total</TableHead>
               </TableRow>
@@ -375,7 +400,7 @@ const Sales = () => {
             <TableBody>
               {sales.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                     No sales yet. Create your first sale to get started.
                   </TableCell>
                 </TableRow>
@@ -388,6 +413,11 @@ const Sales = () => {
                       <TableCell>{sale.id}</TableCell>
                       <TableCell>{formatDate(sale.date)}</TableCell>
                       <TableCell>{sale.customerName}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="capitalize">
+                          {sale.customerType || 'regular'}
+                        </Badge>
+                      </TableCell>
                       <TableCell>
                         <Badge>{sale.items.length}</Badge>
                       </TableCell>

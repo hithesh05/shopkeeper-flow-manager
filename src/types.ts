@@ -26,6 +26,7 @@ export type Sale = {
   total: number;
   customerId: string | null;
   customerName: string;
+  customerType?: string;
 };
 
 export type Invoice = {
@@ -33,6 +34,7 @@ export type Invoice = {
   saleId: string;
   date: string;
   customerName: string;
+  customerType?: string;
   items: SaleItem[];
   subtotal: number;
   tax: number;

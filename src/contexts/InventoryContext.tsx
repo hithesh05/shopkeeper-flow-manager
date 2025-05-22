@@ -145,7 +145,8 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       items: saleItems,
       total: saleTotal,
       customerId: customerInfo.id || null,
-      customerName: customerInfo.name || "Walk-in Customer"
+      customerName: customerInfo.name || "Walk-in Customer",
+      customerType: customerInfo.type || "regular"
     };
 
     // Update inventory
@@ -175,6 +176,7 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       saleId: sale.id,
       date: sale.date,
       customerName: sale.customerName,
+      customerType: sale.customerType,
       items: sale.items,
       subtotal: saleTotal,
       tax: saleTotal * 0.1, // 10% tax

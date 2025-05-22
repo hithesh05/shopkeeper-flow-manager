@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, FileText, Download } from 'lucide-react';
+import { Search, FileText, Download, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Invoice } from '@/types';
@@ -97,6 +97,7 @@ const Invoices = () => {
               <TableHead>Invoice #</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Customer</TableHead>
+              <TableHead>Type</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Amount</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -105,7 +106,7 @@ const Invoices = () => {
           <TableBody>
             {filteredInvoices.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                   No invoices found. Process a sale to generate an invoice.
                 </TableCell>
               </TableRow>
@@ -117,6 +118,11 @@ const Invoices = () => {
                     <TableCell>{invoice.id}</TableCell>
                     <TableCell>{formatDate(invoice.date)}</TableCell>
                     <TableCell>{invoice.customerName}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="capitalize">
+                        {invoice.customerType || 'regular'}
+                      </Badge>
+                    </TableCell>
                     <TableCell>
                       <Badge
                         className={getStatusColor(invoice.status)}
@@ -164,6 +170,9 @@ const Invoices = () => {
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">Bill To:</p>
                   <p className="font-medium">{selectedInvoice.customerName}</p>
+                  <p className="text-sm text-muted-foreground capitalize">
+                    {selectedInvoice.customerType || 'Regular'} Customer
+                  </p>
                 </div>
                 
                 <div className="space-y-1 text-right">
