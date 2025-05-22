@@ -11,11 +11,13 @@ import {
   Settings, 
   Menu, 
   X, 
-  BellDot
+  BellDot,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useInventory } from '@/contexts/InventoryContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -26,6 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { getLowStockProducts } = useInventory();
+  const { user, logout } = useAuth();
   
   const lowStockItems = getLowStockProducts();
   const hasNotifications = lowStockItems.length > 0;
@@ -129,8 +132,11 @@ const Layout = ({ children }: LayoutProps) => {
               )}
             </div>
             
-            <div className="flex items-center">
-              <span className="text-sm font-medium">Admin User</span>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium">{user?.username || 'Admin User'}</span>
+              <Button onClick={logout} variant="ghost" size="icon" title="Logout">
+                <LogOut className="h-5 w-5" />
+              </Button>
             </div>
           </div>
         </div>
