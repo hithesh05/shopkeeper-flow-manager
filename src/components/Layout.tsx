@@ -93,7 +93,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <div className="flex items-center gap-4">
+          {/* Moved the user controls to the right side */}
+          <div className="flex items-center gap-4 ml-auto">
             <div className="relative">
               <Button
                 variant="ghost"
@@ -151,3 +152,4 @@ const Layout = ({ children }: LayoutProps) => {
 };
 
 export default Layout;
+
