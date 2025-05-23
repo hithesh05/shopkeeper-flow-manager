@@ -15,6 +15,7 @@ type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
   login: (username: string, password: string) => Promise<boolean>;
+  signup: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
 };
@@ -81,11 +82,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Mock signup function - in a real app, this would call an API
+  const signup = async (username: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
+    
+    try {
+      // In a real app, this would be an API call to create a new user
+      // For demo purposes, we'll just create a mock user
+      const newUser = {
+        id: Date.now().toString(),
+        username,
+        isAdmin: true, // For demo, all users are admins
+      };
+      
+      // Store user in local storage to persist session
+      localStorage.setItem('user', JSON.stringify(newUser));
+      setUser(newUser);
+      toast({
+        title: "Account created successfully",
+        description: `Welcome, ${username}!`,
+      });
+      setIsLoading(false);
+      return true;
+    } catch (error) {
+      console.error('Signup error:', error);
+      toast({
+        title: "Signup error",
+        description: "An error occurred during signup",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return false;
+    }
+  };
+
   // Logout function
   const logout = () => {
     localStorage.removeItem('user');
     setUser(null);
-    navigate('/login');
+    navigate('/');
     toast({
       title: "Logged out",
       description: "You have been logged out successfully",
@@ -98,6 +133,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         isAuthenticated: !!user,
         login,
+        signup,
         logout,
         isLoading,
       }}

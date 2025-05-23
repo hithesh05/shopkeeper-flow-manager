@@ -7,23 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Login = () => {
+const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const { login, isLoading } = useAuth();
+  const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     
-    if (!username || !password) {
-      setError("Please provide both username and password");
+    if (!username || !password || !confirmPassword) {
+      setError("Please provide all required fields");
       return;
     }
 
-    const success = await login(username, password);
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    const success = await signup(username, password);
     if (success) {
       navigate("/dashboard");
     }
@@ -35,10 +41,10 @@ const Login = () => {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-primary">InventBill</h1>
           <h2 className="mt-6 text-2xl font-bold tracking-tight">
-            Admin Login
+            Create an Account
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to access your inventory and billing dashboard
+            Sign up to access your inventory and billing dashboard
           </p>
         </div>
         
@@ -77,22 +83,29 @@ const Login = () => {
                 className="mt-1"
               />
             </div>
+            
+            <div>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm Password"
+                required
+                className="mt-1"
+              />
+            </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-primary hover:underline">
-                Sign up
+              Already have an account?{" "}
+              <Link to="/login" className="text-primary hover:underline">
+                Sign in
               </Link>
             </div>
-          </div>
-
-          <div className="text-sm text-right">
-            <span className="text-muted-foreground">Default credentials: </span>
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-sm">
-              admin / admin
-            </code>
           </div>
 
           <Button
@@ -100,12 +113,16 @@ const Login = () => {
             className="w-full"
             disabled={isLoading}
           >
-            {isLoading ? "Signing in..." : "Sign in"}
+            {isLoading ? "Creating account..." : "Sign up"}
           </Button>
+          
+          <div className="text-center text-sm text-muted-foreground">
+            By signing up, you agree to our Terms of Service and Privacy Policy
+          </div>
         </form>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;
